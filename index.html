@@ -271,22 +271,12 @@
 
     <section>
       <div class="section-head">
-        <div class="kicker">the ones you already loved</div>
-        <h2>Our Shortlist</h2>
-        <p>The three you saved — I kept them right at the top. 💛</p>
+        <div class="kicker">seven little spots · all in mansarovar</div>
+        <h2>Our Little Menu</h2>
+        <p>Your saved favourites and a few I picked for us — swipe through and choose one. 💛</p>
       </div>
-      <div class="grid" id="savedGrid"></div>
-      <div class="swipe-hint">← swipe to see all →</div>
-    </section>
-
-    <section>
-      <div class="section-head">
-        <div class="kicker">a few more, just for us</div>
-        <h2>Sweet Little Extras</h2>
-        <p>Four more lovely cafes I found — all in Mansarovar, all close by. ☕</p>
-      </div>
-      <div class="grid" id="suggestGrid"></div>
-      <div class="swipe-hint">← swipe to see all →</div>
+      <div class="grid" id="allGrid"></div>
+      <div class="swipe-hint">← swipe through them all →</div>
     </section>
 
     <footer>
@@ -425,10 +415,8 @@ function cardHTML(p){
   </article>`;
 }
 
-const savedGrid = document.getElementById('savedGrid');
-const suggestGrid = document.getElementById('suggestGrid');
-savedGrid.innerHTML = PLACES.filter(p=>p.kind==='saved').map(cardHTML).join('');
-suggestGrid.innerHTML = PLACES.filter(p=>p.kind==='pick').map(cardHTML).join('');
+const allGrid = document.getElementById('allGrid');
+allGrid.innerHTML = PLACES.map(cardHTML).join('');
 
 /* "none of these? tell me your choice" card → opens Google */
 const wish = document.createElement('div');
@@ -443,7 +431,7 @@ wish.innerHTML = `
 function openGoogle(){ window.open('https://www.google.com', '_blank', 'noopener'); }
 wish.addEventListener('click', openGoogle);
 wish.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openGoogle(); } });
-suggestGrid.appendChild(wish);
+allGrid.appendChild(wish);
 
 /* ---------------- reveal on scroll ---------------- */
 const io = new IntersectionObserver((entries)=>{
