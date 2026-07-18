@@ -233,12 +233,17 @@
   .swipe-hint{display:none;}
   @media (max-width:640px){
     .grid{
-      display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch; padding:6px 4px 16px; margin-top:22px;
+      display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch; scroll-padding-left:18px;
+      padding:6px 18px 16px; margin-top:22px;
       scrollbar-width:none;
     }
     .grid::-webkit-scrollbar{display:none;}
-    .grid > .card, .grid > .wish-card{ flex:0 0 84%; scroll-snap-align:center; }
+    .grid > .card, .grid > .wish-card{
+      flex:0 0 80%; scroll-snap-align:start;
+      /* always visible in the carousel so the peeking next card never stays hidden */
+      opacity:1 !important; transform:none !important;
+    }
     .swipe-hint{
       display:block; text-align:center; color:var(--muted); font-size:12px;
       letter-spacing:.22em; text-transform:uppercase; margin-top:2px;
@@ -297,7 +302,7 @@
     </div>
   </div>
 
-  <audio id="song" loop preload="auto">
+  <audio id="song" preload="auto">
     <source src="Main%20Koi%20Aisa%20Geet%20Gaoon%20(PenduJatt.Com.Se).mp3" type="audio/mpeg" />
   </audio>
 
@@ -541,34 +546,39 @@ function burstHearts(){
   }
 }
 
-/* ---------------- our song 🎶 ---------------- */
+/* ---------------- our song 🎶 (starts at 0:09, skips the silent intro) ---------------- */
 const song = document.getElementById('song');
 const fab = document.getElementById('musicFab');
 const playBtn = document.getElementById('playMusic');
+const START_AT = 9;
 let playing = false;
 
 function startMusic(){
+  try{ if(song.currentTime < START_AT) song.currentTime = START_AT; }catch(e){}
   const p = song.play();
   if(p && p.catch){ p.catch(()=>{ playBtn.textContent='🎵 Tap once more to play'; }); }
 }
 function stopMusic(){ song.pause(); }
 function toggleMusic(){ playing ? stopMusic() : startMusic(); }
 
+/* loop back to 0:09 instead of the silent start */
+song.addEventListener('ended', ()=>{ try{ song.currentTime = START_AT; }catch(e){} song.play(); });
+
 song.addEventListener('play', ()=>{
   playing = true;
   fab.classList.add('playing'); fab.textContent = '🎶';
-  playBtn.textContent = '🔊 Our song is playing…';
+  playBtn.textContent = '🔊 Playing…';
 });
 song.addEventListener('pause', ()=>{
   playing = false;
   fab.classList.remove('playing'); fab.textContent = '🎵';
-  playBtn.textContent = '🎵 Play our song';
+  playBtn.textContent = '🎵 Play song';
 });
 song.addEventListener('error', ()=>{
   playBtn.textContent = '⚠️ Song file not found';
 });
 
-playBtn.textContent = '🎵 Play our song';
+playBtn.textContent = '🎵 Play song';
 playBtn.onclick = toggleMusic;
 fab.onclick = toggleMusic;
 </script>
